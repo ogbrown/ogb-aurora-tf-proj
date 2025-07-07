@@ -1,6 +1,8 @@
 # ogb-aurora-tf-proj
 Terraform for Aurora Postgres - Simple
 
+Note: This project defaults to deploy in AWS to us-east-2
+
 ## Useful Links
 
 - [AWS RDS Documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
