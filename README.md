@@ -3,6 +3,22 @@ Terraform for Aurora Postgres - Simple
 
 Note: This project defaults to deploy in AWS to us-east-2
 
+This project includes deployment of the following AWS resources:
+- S3 Bucket - example
+  - aws_s3_bucket
+  - aws_s3_bucket_ownership_controls
+- Networking
+  - aws_security_group
+  - aws_db_subnet_group
+- Secret Manager
+  - random_password
+  - aws_secretsmanager_secret
+  - aws_secretsmanager_secret_version
+- Aurora
+  - aws_rds_cluster
+  - aws_rds_cluster_instance
+
+
 ## Useful Links
 
 - [AWS RDS Documentation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)

@@ -24,10 +24,6 @@ variable "master_user" {
   description = "Master username for the RDS instance"
   type        = string
 }
-variable "master_pwd" {
-  description = "Master password for the RDS instance"
-  type        = string
-}
 
 variable "vpc_name" {
   description = "Name of the VPC to use for the Aurora cluster"

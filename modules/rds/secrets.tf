@@ -1,12 +1,21 @@
-# resource "random_password" "master_password" {
-#   length  = 16
-#   special = true
-# }
+resource "random_password" "db_password" {
+  length  = 16
+  special = true
+}
 
-# resource "aws_secretsmanager_secret" "aurora_secret" {
-#   name = "${var.cluster_identifier}-secret"
-#   description = "Master credentials for Aurora PostgreSQL"
-# }
+resource "aws_secretsmanager_secret" "aurora_db_secret" {
+  name = "${var.cluster_identifier}-secret"
+  description = "Master credentials for Aurora PostgreSQL"
+}
+
+resource "aws_secretsmanager_secret_version" "aurora_db_secret_version" {
+  secret_id     = aws_secretsmanager_secret.aurora_db_secret.id
+  secret_string = jsonencode({
+    username = var.master_user
+    password = random_password.db_password.result
+  })
+}
+
 
 # resource "aws_secretsmanager_secret_version" "aurora_secret_version" {
 #   secret_id = aws_secretsmanager_secret.aurora_secret.id

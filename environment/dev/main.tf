@@ -33,7 +33,6 @@ module "rds" {
   cluster_identifier       = "${var.short_project_name}-202507-cheapest-v2-dev"
   db_name                  = "${var.short_project_name}-20250706-ex-db"
   master_user              = var.master_user
-  master_pwd               = var.master_pwd
   instance_class           = "db.serverless" # Required for Aurora Serverless v2
   db_subnet_group_name     = module.net.subnet_group_name
   rotation_lambda_arn      = "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:SecretsManagerRDSPostgreSQLRotationSingleUser"
