@@ -8,16 +8,9 @@ variable "aws_region" {
 variable "short_project_name" {
   description = "Short name for the project, used in resource names"
   type        = string
-  default     = "ogb-aurora"
 }
 variable "tags" {
   type = map(string)
-  default = {
-    Environment = "dev"
-    Project     = "ogb-aurora-tf-proj"
-    Owner       = "ogb3"
-    ManagedBy   = "terraform"
-  }
 }
 
 variable "master_user" {
