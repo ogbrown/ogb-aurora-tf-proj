@@ -11,3 +11,7 @@ variable "short_project_name" {
   type        = string
   
 }
+variable "vpc_name" {
+  description = "Name of the VPC to use for the Aurora cluster"
+  type        = string
+}
