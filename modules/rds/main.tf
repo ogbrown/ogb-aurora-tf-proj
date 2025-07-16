@@ -1,15 +1,22 @@
+locals {
+  raw_string = var.db_name
+  parts = split("-", local.raw_string)
+  remaining_parts = concat([lower(local.parts[0])],[for p in slice(local.parts, 1, length(local.parts)) : title(lower(p))])
+  db_name = join("", local.remaining_parts)
+}
 
 resource "aws_rds_cluster" "aurora_serverless_v2" {
   cluster_identifier      = var.cluster_identifier
   engine                  = "aurora-postgresql"
   engine_version          = "15.4" # Use a valid and available version in your region
-  database_name           = var.db_name
-  master_username         = var.master_user
-  master_password         = var.master_pwd
+  database_name           = local.db_name
+  master_username         = jsondecode(aws_secretsmanager_secret_version.aurora_db_master_secret_version.secret_string)["username"]
+  master_password         = jsondecode(aws_secretsmanager_secret_version.aurora_db_master_secret_version.secret_string)["password"]
   backup_retention_period = 1
   preferred_backup_window = "07:00-09:00"
 
   storage_encrypted       = true
+  skip_final_snapshot     = true
 
   serverlessv2_scaling_configuration {
     min_capacity = 0.5
@@ -35,4 +42,19 @@ resource "aws_rds_cluster_instance" "aurora_serverless_v2_instance" {
   publicly_accessible     = true # set to true if you need external access
   # Only 1 instance for cheapest option
   tags = var.tags
+}
+
+resource "null_resource" "setup_app_user" {
+  depends_on = [aws_rds_cluster_instance.aurora_serverless_v2_instance]
+
+  provisioner "local-exec" {
+    command = <<EOT
+    PGPASSWORD="${aws_rds_cluster.aurora_serverless_v2.master_password}" psql \
+      --host=${aws_rds_cluster.aurora_serverless_v2.endpoint} \
+      --port=5432 \
+      --username="${aws_rds_cluster.aurora_serverless_v2.master_username}" \
+      --dbname=${local.db_name} \
+      --file=create_app_user.sql
+    EOT
+  }
 }
