@@ -10,12 +10,13 @@ resource "aws_rds_cluster" "aurora_serverless_v2" {
   engine                  = "aurora-postgresql"
   engine_version          = "15.4" # Use a valid and available version in your region
   database_name           = local.db_name
-  master_username         = jsondecode(aws_secretsmanager_secret_version.aurora_db_secret_version.secret_string)["username"]
-  master_password         = jsondecode(aws_secretsmanager_secret_version.aurora_db_secret_version.secret_string)["password"]
+  master_username         = jsondecode(aws_secretsmanager_secret_version.aurora_db_master_secret_version.secret_string)["username"]
+  master_password         = jsondecode(aws_secretsmanager_secret_version.aurora_db_master_secret_version.secret_string)["password"]
   backup_retention_period = 1
   preferred_backup_window = "07:00-09:00"
 
   storage_encrypted       = true
+  skip_final_snapshot     = true
 
   serverlessv2_scaling_configuration {
     min_capacity = 0.5

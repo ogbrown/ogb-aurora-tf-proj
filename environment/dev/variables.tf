@@ -19,6 +19,29 @@ variable "master_user" {
   type        = string
 }
 
+variable "db_user" {
+  description = "Database user for the RDS instance"
+  type        = string
+}
+
+variable "db_user_password" {
+  description = "Password for the database user"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "Name of the database to create in the RDS instance"
+  type        = string
+}
+
+variable "cluster_identifier_suffix" {
+  description = "Suffix for the cluster identifier to ensure uniqueness"
+  type        = string
+
+}
+
+
 variable "vpc_name" {
   description = "Name of the VPC to use for the Aurora cluster"
   type        = string

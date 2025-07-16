@@ -4,16 +4,30 @@ resource "random_password" "db_password" {
   override_special = "!#$%^&*()-_=+[]{}<>?~" # Specify valid special characters
 }
 
-resource "aws_secretsmanager_secret" "aurora_db_secret" {
+resource "aws_secretsmanager_secret" "aurora_db_master_secret" {
   name = "${var.cluster_identifier}-secret"
   description = "Master credentials for Aurora PostgreSQL"
 }
 
-resource "aws_secretsmanager_secret_version" "aurora_db_secret_version" {
-  secret_id     = aws_secretsmanager_secret.aurora_db_secret.id
+resource "aws_secretsmanager_secret_version" "aurora_db_master_secret_version" {
+  secret_id     = aws_secretsmanager_secret.aurora_db_master_secret.id
   secret_string = jsonencode({
     username = var.master_user
     password = random_password.db_password.result
+  })
+}
+
+resource "aws_secretsmanager_secret" "aurora_db_user_secret" {
+  name = "${var.cluster_identifier}-user-secret"
+  description = "User credentials for Aurora PostgreSQL"
+}
+
+resource "aws_secretsmanager_secret_version" "aurora_db_user_secret_version" {
+  secret_id     = aws_secretsmanager_secret.aurora_db_user_secret.id
+  secret_string = jsonencode({
+    "spring.datasource.username" : var.db_user
+    "spring.datasource.password" : var.db_user_password
+    "spring.datasource.url": "jdbc:postgresql://${var.cluster_identifier}-cluster.cluster-identifier.rds.amazonaws.com:5432/${var.db_name}"
   })
 }
 
