@@ -18,7 +18,7 @@ resource "aws_secretsmanager_secret_version" "aurora_db_master_secret_version" {
 }
 
 resource "aws_secretsmanager_secret" "aurora_db_user_secret" {
-  name = "${var.cluster_identifier}-user-secret"
+  name = "local/dev"
   description = "User credentials for Aurora PostgreSQL"
 }
 

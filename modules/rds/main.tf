@@ -44,3 +44,17 @@ resource "aws_rds_cluster_instance" "aurora_serverless_v2_instance" {
   tags = var.tags
 }
 
+resource "null_resource" "setup_app_user" {
+  depends_on = [aws_rds_cluster_instance.aurora_serverless_v2_instance]
+
+  provisioner "local-exec" {
+    command = <<EOT
+    PGPASSWORD="${aws_rds_cluster.aurora_serverless_v2.master_password}" psql \
+      --host=${aws_rds_cluster.aurora_serverless_v2.endpoint} \
+      --port=5432 \
+      --username="${aws_rds_cluster.aurora_serverless_v2.master_username}" \
+      --dbname=${local.db_name} \
+      --file=create_app_user.sql
+    EOT
+  }
+}
