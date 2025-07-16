@@ -27,7 +27,7 @@ resource "aws_secretsmanager_secret_version" "aurora_db_user_secret_version" {
   secret_string = jsonencode({
     "spring.datasource.username" : var.db_user
     "spring.datasource.password" : var.db_user_password
-    "spring.datasource.url": "jdbc:postgresql://${var.cluster_identifier}-cluster.cluster-identifier.rds.amazonaws.com:5432/${var.db_name}"
+    "spring.datasource.url": "jdbc:postgresql://${aws_rds_cluster.aurora_serverless_v2.endpoint}:5432/${local.db_name}"
   })
 }
 
