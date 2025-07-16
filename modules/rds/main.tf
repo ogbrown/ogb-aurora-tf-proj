@@ -1,9 +1,15 @@
+locals {
+  raw_string = var.db_name
+  parts = split("-", local.raw_string)
+  remaining_parts = concat([lower(local.parts[0])],[for p in slice(local.parts, 1, length(local.parts)) : title(lower(p))])
+  db_name = join("", local.remaining_parts)
+}
 
 resource "aws_rds_cluster" "aurora_serverless_v2" {
   cluster_identifier      = var.cluster_identifier
   engine                  = "aurora-postgresql"
   engine_version          = "15.4" # Use a valid and available version in your region
-  database_name           = var.db_name
+  database_name           = local.db_name
   master_username         = jsondecode(aws_secretsmanager_secret_version.aurora_db_secret_version.secret_string)["username"]
   master_password         = jsondecode(aws_secretsmanager_secret_version.aurora_db_secret_version.secret_string)["password"]
   backup_retention_period = 1
@@ -36,3 +42,4 @@ resource "aws_rds_cluster_instance" "aurora_serverless_v2_instance" {
   # Only 1 instance for cheapest option
   tags = var.tags
 }
+

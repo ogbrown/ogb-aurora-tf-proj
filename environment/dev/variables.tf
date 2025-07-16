@@ -5,6 +5,7 @@ variable "aws_region" {
 
 }
 
+
 variable "short_project_name" {
   description = "Short name for the project, used in resource names"
   type        = string
