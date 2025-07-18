@@ -39,3 +39,15 @@ module "rds" {
   kms_key_arn                  = data.aws_kms_key.aurora_kms_key.arn
 }
 
+module "secrets" {
+  source                    = "../../modules/secrets"
+  short_project_name        = var.short_project_name
+  aurora_db_app_secret_name = var.aurora_db_app_secret_name
+  kms_key_id                = data.aws_kms_key.aurora_kms_key.id
+  db_name                   = "${var.short_project_name}-${var.db_name}"
+  db_url                    = module.rds.cluster_endpoint
+  db_user                   = var.db_user
+  db_user_password          = var.db_user_password
+  tags                      = local.global_tags
+}
+

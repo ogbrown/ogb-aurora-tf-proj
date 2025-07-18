@@ -23,6 +23,10 @@ variable "aurora_db_master_secret_name" {
   description = "Name of the AWS Secrets Manager secret for the Aurora DB master credentials"
   type        = string
 }
+variable "aurora_db_app_secret_name" {
+  description = "Name of the AWS Secrets Manager secret for the Aurora DB master credentials"
+  type        = string
+}
 
 variable "db_user" {
   description = "Database user for the RDS instance"
