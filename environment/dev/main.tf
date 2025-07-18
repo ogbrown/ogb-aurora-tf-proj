@@ -1,4 +1,3 @@
-
 locals {
   global_tags = merge(
     var.tags,
@@ -8,12 +7,9 @@ locals {
   )
 }
 data "aws_caller_identity" "current" {}
-module "s3" {
-  source             = "../../modules/s3"
-  aws_region         = var.aws_region
-  short_project_name = var.short_project_name
-  bucket_name        = var.bucket_name
-  tags               = local.global_tags
+
+data "aws_kms_key" "aurora_kms_key" {
+  key_id = "alias/${var.general_kms_key_alias}" # Replace with your KMS key alias
 }
 
 module "net" {
@@ -26,18 +22,20 @@ module "net" {
 }
 
 module "rds" {
-  source                   = "../../modules/rds"
-  short_project_name       = var.short_project_name
-  vpc_id                   = module.net.vpc_id
-  aurora_security_group_id = module.net.aurora_sg_id
-  cluster_identifier       = "${var.short_project_name}-${var.cluster_identifier_suffix}"
-  db_name                  = "${var.short_project_name}-${var.db_name}"
-  db_user                  = var.db_user
-  db_user_password         = var.db_user_password
-  master_user              = var.master_user
-  instance_class           = "db.serverless" # Required for Aurora Serverless v2
-  db_subnet_group_name     = module.net.subnet_group_name
-  rotation_lambda_arn      = "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:SecretsManagerRDSPostgreSQLRotationSingleUser"
-  tags                     = local.global_tags
+  source                       = "../../modules/rds"
+  short_project_name           = var.short_project_name
+  vpc_id                       = module.net.vpc_id
+  aurora_security_group_id     = module.net.aurora_sg_id
+  cluster_identifier           = "${var.short_project_name}-${var.cluster_identifier_suffix}"
+  db_name                      = "${var.short_project_name}-${var.db_name}"
+  db_user                      = var.db_user
+  db_user_password             = var.db_user_password
+  master_user                  = var.master_user
+  aurora_db_master_secret_name = var.aurora_db_master_secret_name
+  instance_class               = "db.serverless" # Required for Aurora Serverless v2
+  db_subnet_group_name         = module.net.subnet_group_name
+  rotation_lambda_arn          = "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:SecretsManagerRDSPostgreSQLRotationSingleUser"
+  tags                         = local.global_tags
+  kms_key_arn                  = data.aws_kms_key.aurora_kms_key.arn
 }
 

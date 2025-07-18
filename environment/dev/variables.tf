@@ -19,6 +19,11 @@ variable "master_user" {
   type        = string
 }
 
+variable "aurora_db_master_secret_name" {
+  description = "Name of the AWS Secrets Manager secret for the Aurora DB master credentials"
+  type        = string
+}
+
 variable "db_user" {
   description = "Database user for the RDS instance"
   type        = string
@@ -47,7 +52,7 @@ variable "vpc_name" {
   type        = string
 }
 
-variable "bucket_name" {
-  description = "Name of the S3 bucket to create"
+variable "general_kms_key_alias" {
+  description = "Alias of my KMS Key for Encrypt Decrypt operations"
   type        = string
 }

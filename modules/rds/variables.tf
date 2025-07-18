@@ -6,6 +6,14 @@ variable "vpc_id" {}
 variable "aurora_security_group_id" {}
 variable "cluster_identifier" {}
 variable "master_user" {}
+variable "aurora_db_master_secret_name" {
+  description = "Name of the AWS Secrets Manager secret for the Aurora DB master credentials"
+  type        = string
+}
+variable "kms_key_arn" {
+  description = "ARN of the KMS key to use for encryption"
+  type        = string
+}
 variable "instance_class" {}
 variable "instance_count" {
   default = 1
