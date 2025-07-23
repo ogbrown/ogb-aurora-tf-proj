@@ -16,6 +16,10 @@ data "aws_subnet" "az_c" {
     name   = "availability-zone"
     values = ["${var.aws_region}c"]
   }
+  filter {
+    name   = "tag:Public"
+    values = ["true"] # Ensure the subnet is tagged as public
+  }
 }
 
 data "aws_subnet" "az_b" {
@@ -26,6 +30,10 @@ data "aws_subnet" "az_b" {
   filter {
     name   = "availability-zone"
     values = ["${var.aws_region}b"]
+  }
+  filter {
+    name   = "tag:Public"
+    values = ["true"] # Ensure the subnet is tagged as public
   }
 }
 
